@@ -1,0 +1,12 @@
+---
+help:
+  load: "To load a file, type 'load <filename>'. If no filename is provided, the default 'event_attendees.csv' will be used"
+  find: "Typing 'find <attribute> <criteria>' will allow you to search the records for speciic instances, and updates the queue with the results."
+  quit: "To exit the program, please type 'quit'."
+  save: "Typing 'queue save to <filename>'' will create a new csv file with the results of your current queue."
+  queue:
+    count: "Typing 'queue count' will return the number or attendee records that are currently in the queue."
+    clear: "Typing 'queue clear' will remove any current records from the attendees list."
+    print: 
+      print: "Typing 'queue print' will display the current queue results on the screen. You can also use 'queue print by <attribute>' to print the results sorted on an attribute."
+      by: "Typing 'queue print by <attribute>' will print the queue sorted by the specified attribute (e.g., last_name)"
