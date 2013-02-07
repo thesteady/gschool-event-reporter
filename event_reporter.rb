@@ -72,27 +72,41 @@ end
 
   def queue_print_records
     puts "LAST NAME\tFIRST NAME\tEMAIL\tZIPCODE\tCITY\tSTATE\tADDRESS\tPHONE"
+
     @queue.each do |attendee|
-      puts [attendee.last_name, attendee.first_name, attendee.email, attendee.zipcode, attendee.city, attendee.state, attendee.address, attendee.phone].join("\t")
+      row = []
+      attendee.each  do |attribute| 
+        row << attribute
+      end
+      puts row.join("\t")
     end
   end
 
   def queue_print_by_attribute(queue_command)
-    attribute = queue_command[2]
+    attribute = queue_command[2].downcase
+    puts "attribute is:  #{attribute}"
 
-    @queue = @queue.sort {|attendee1, attendee2| attendee1.send(attribute.downcase).downcase <=> attendee2.send(attribute.downcase).downcase}
+    @queue.sort! do |attendee1, attendee2|
+     attendee1.send(attribute).downcase <=> attendee2.send(attribute).downcase
+    end
     queue_print_records
   end
 
   def queue_save_to_file(queue_command)
-    puts "saving your data to a csv"
     filename = queue_command[-1]
-    puts "#{filename}"
 
     CSV.open(filename, "w") do |csv|
-      csv << ["LAST NAME", "FIRST NAME", "EMAIL", "ZIPCODE", "CITY", "STATE", "ADDRESS", "PHONE"]
+    csv << ["LAST NAME", "FIRST NAME", "EMAIL", 
+            "ZIPCODE", "CITY", "STATE", 
+            "ADDRESS", "PHONE"
+          ]
+      
       @queue.each do |attendee|
-        csv <<[attendee.last_name, attendee.first_name, attendee.email, attendee.zipcode, attendee.city, attendee.state, attendee.address, attendee.phone]
+        csv <<[ attendee.last_name, attendee.first_name,
+                attendee.email, attendee.zipcode,
+                attendee.city, attendee.state,
+                attendee.address, attendee.phone
+              ]
       end
     end
     puts "File #{filename} has been created."
@@ -105,15 +119,17 @@ end
 
     puts " searched on attribute: #{attribute}, criteria: #{criteria}"
 
-    @queue = @csv.people.select { |attendee| attendee.send(attribute).to_s.downcase == criteria }
-    puts "Finding completed, #{@queue.count} results. Please type 'queue print' to see results."
+    @queue = @csv.people.select do |attendee|
+      attendee.send(attribute).to_s.downcase == criteria
+    end
+
+    puts "Found #{@queue.count} results. Type 'queue print' for results."
   end
 
 ############### HELP #####################
   def help_user(rest_of_input)
-    help_input = rest_of_input.join(" ")
     
-    case help_input
+    case rest_of_input.join(" ")
     when "" then display_help_options
     when "queue" then display_help_queue_options
     when "queue count" then puts @yaml["help"]["queue"]["count"]
@@ -130,7 +146,7 @@ end
   end
 
   def display_help_options
-    puts "How Can I Help You? To open a specific help option, please type 'help .....' "
+    puts "To open a specific help option, please type 'help .....'"
     puts @yaml["help"]
   end
 

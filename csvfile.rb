@@ -1,6 +1,6 @@
  require 'csv'
 
-Attendee = Struct.new(:first_name, :last_name, :email, :phone, :address, :zipcode, :city, :state, :reg_date)
+Attendee = Struct.new(:last_name, :first_name, :email, :zipcode, :city, :state, :address, :phone)
 
   class CsvFile
     attr_accessor :people
@@ -37,17 +37,16 @@ Attendee = Struct.new(:first_name, :last_name, :email, :phone, :address, :zipcod
 
     def parse(contents)
       contents.each do |line|
-        first_name = line["first_Name"]
         last_name = line["last_Name"]
+        first_name = line["first_Name"]
         email = line["Email_Address"]
         phone = clean_phone_number(line["HomePhone"])
         address = line["Street"]
         zipcode = clean_zipcode(line["Zipcode"])
         city = line["City"]
         state = line["State"]
-        reg_date = line["RegDate"]
 
-        @people << Attendee.new(first_name, last_name, email, phone, address, zipcode, city, state, reg_date)
+        @people << Attendee.new(last_name, first_name, email, zipcode, city, state, address, phone)
       end
       @people
     end
@@ -72,8 +71,15 @@ Attendee = Struct.new(:first_name, :last_name, :email, :phone, :address, :zipcod
       elsif stripped_number.length == 11 && stripped_number[0] != "1"
         "000-000-0000"
       else
-        "(#{stripped_number[-10..-8]})-#{stripped_number[-7..-5]}-#{stripped_number[-4..-1]}"
+        format_clean_phone_number(stripped_number)
       end 
+    end
+
+    def format_clean_phone_number(stripped_number)
+      area_code = stripped_number[-10..-8]
+      prefix = stripped_number[-7..-5]
+      base = stripped_number[-4..-1]
+      "#{area_code}-#{prefix}-#{base}"
     end
   end
 
