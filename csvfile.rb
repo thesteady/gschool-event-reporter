@@ -1,6 +1,13 @@
  require 'csv'
 
-Attendee = Struct.new(:last_name, :first_name, :email, :zipcode, :city, :state, :address, :phone)
+Attendee = Struct.new(:last_name, 
+                      :first_name, 
+                      :email, 
+                      :zipcode, 
+                      :city, 
+                      :state, 
+                      :address, 
+                      :phone)
 
   class CsvFile
     attr_accessor :people
@@ -46,7 +53,8 @@ Attendee = Struct.new(:last_name, :first_name, :email, :zipcode, :city, :state, 
         city = line["City"]
         state = line["State"]
 
-        @people << Attendee.new(last_name, first_name, email, zipcode, city, state, address, phone)
+        @people << Attendee.new(last_name, first_name, email, zipcode, city, 
+                                state, address, phone)
       end
       @people
     end
@@ -61,7 +69,7 @@ Attendee = Struct.new(:last_name, :first_name, :email, :zipcode, :city, :state, 
 
     def clean_phone_number(phone_number)
       if phone_number.nil?
-        stripped_number = "0000000000"
+        "000-000-0000"
       else
         stripped_number = phone_number.gsub(/[^0-9]/, "")
       end
